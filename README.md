@@ -1,6 +1,6 @@
 # Align Before Action
 
-`Align Before Action` is a Codex skill for conversations where acting too early is the main risk. Users can invoke it directly, or an ordinary request with high-impact unresolved information can receive a short suggestion to enter the skill. It helps the assistant fully understand the user's intent, improve one important weakness at a time, confirm a shared brief, and act only after explicit authorization.
+`Align Before Action` is a way to talk an idea through before doing anything with it. Use it when the idea is still forming, the context is incomplete, or you do not want the assistant to guess first and act later. Users can invoke it directly, and the assistant may suggest it when a request still has important unresolved details. Once active, it clarifies the goal, fills the key gaps step by step, confirms a shared brief, and acts only after explicit authorization.
 
 [简体中文说明](README.zh-CN.md)
 
