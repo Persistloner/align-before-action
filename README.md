@@ -1,6 +1,6 @@
 # Align Before Action
 
-`Align Before Action` is a way to talk an idea through before doing anything with it. Use it when the idea is still forming, the context is incomplete, or you do not want the assistant to guess first and act later. Users can invoke it directly, and the assistant may suggest it when a request still has important unresolved details. Once active, it clarifies the goal, fills the key gaps step by step, confirms a shared brief, and acts only after explicit authorization.
+`Align Before Action` helps you clarify an idea before turning it into action. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. You can invoke it directly, and the assistant may also suggest it when important details are still missing. Once active, it helps align on the goal, work through key gaps step by step, confirm the final brief, and act only after your explicit approval.
 
 [简体中文说明](README.zh-CN.md)
 
