@@ -22,6 +22,19 @@ The sufficiency check concerns decision-relevant uncertainty, not linguistic vag
 
 If the user accepts the suggestion, switch to `Understand` and follow the rest of this contract. If the user declines, asks for a direct answer, or names an immediate action, honor that choice, do not repeat the suggestion in the same turn, and preserve normal safety and permission checks. For a fresh implicit request that refuses questions and names an immediate action, bypass alignment; state at most one material unresolved risk when it matters, then proceed with normal handling. Do not say alignment mode is ending unless alignment was already active. A suggestion is not user confirmation of any interpretation or authorization for execution.
 
+## Coordination Gate
+
+When this skill is relevant together with downstream design, planning, or creation skills, treat Align Before Action as the upstream gate. Downstream skills include `brainstorming`, `skill-creator`, `writing-skills`, `writing-plans`, `plugin-creator`, and similar skills that design, specify, create, or implement an artifact.
+
+Reading required downstream skill instructions is allowed when the runtime requires it. Executing their workflow is not allowed until one of these happens:
+
+- the user accepts alignment and this skill reaches a confirmed handoff
+- the user declines alignment
+- the user explicitly exits alignment and names the immediate downstream action
+- the user's original request already contains enough confirmed information for direct downstream work
+
+Before that point, do not start downstream checklists, ask downstream design questions, propose solution approaches, create a skill brief, write a spec, modify files, or present an artifact plan. In implicit suggestion mode, the only user-facing action is the concise alignment suggestion. If the user accepts, continue with `Understand`, not with downstream design. If the user declines or names the downstream action, hand off and do not repeat the alignment suggestion in the same turn.
+
 ## Contract
 
 After explicit invocation or acceptance of an implicit suggestion, enter discussion-only mode. First understand the user's intent, then help improve it. Do not create durable deliverables, modify files or code, or take external action unless the user confirms the final brief and authorizes the next action, explicitly exits alignment and requests a named immediate action under Handoff, or explicitly requests an Interim Record that only preserves the discussion.
@@ -122,6 +135,7 @@ Omit empty fields. Keep the final brief compact enough that the user can read it
 - For daily goals, expression, decisions, or simple requests, keep the result as a clear brief or ask whether the user wants help turning it into a plan.
 - Never auto-switch into another skill without user confirmation.
 - Automatic discovery may suggest this skill from a normal conversation; handoff still requires explicit user acceptance.
+- When another skill is waiting downstream, this skill's confirmed final brief becomes the source of truth for that handoff.
 
 ## Interim Records
 
@@ -190,6 +204,7 @@ The user may pause, revise, go back, skip an item, or exit at any time. Exiting 
 - Starting the full alignment flow after implicit selection without the user's acceptance
 - Suggesting alignment solely because the input is short, informal, or missing harmless detail
 - Repeating an entry suggestion after the user declines it
+- Starting a downstream skill workflow before the coordination gate has resolved
 - Presenting a deliverable as a brief to avoid choosing between alignment and execution
 - Reopening a confirmed final brief merely because another idea occurs
 - Presenting provisional or skipped items as confirmed

@@ -28,6 +28,36 @@ cases:
       - "Starting the full alignment flow before the user accepts the suggestion."
       - "Treating the request as vague solely because it is informal."
 
+  - id: downstream-coordination-gate
+    stage: entry
+    user: "我想做一个面向 AI PM 的 skill。"
+    expected:
+      - "Treat Align Before Action as the upstream gate when downstream design or skill-creation skills also apply."
+      - "Offer one concise, optional suggestion to align before starting downstream design or skill creation."
+    forbidden:
+      - "Starting the brainstorming question flow before the user accepts or declines alignment."
+      - "Starting the skill-creator or writing-skills creation workflow before the user accepts or declines alignment."
+      - "Asking a sequence of design questions as if downstream work has already started."
+
+  - id: downstream-after-alignment-acceptance
+    stage: entry
+    user: "可以，先对齐。"
+    expected:
+      - "Enter Align Before Action Understand mode."
+      - "Ask only one material intent-alignment question before downstream design."
+    forbidden:
+      - "Switching immediately into brainstorming design options."
+      - "Starting skill creation or writing a skill brief before the alignment flow reaches handoff."
+
+  - id: downstream-after-alignment-decline
+    stage: entry
+    user: "不用对齐，直接进入 brainstorming 帮我设计这个 skill。"
+    expected:
+      - "Honor the decline and hand off to the named downstream workflow under normal rules."
+    forbidden:
+      - "Repeating the alignment suggestion in the same turn."
+      - "Continuing the full Align Before Action flow after the user declined it."
+
   - id: implicit-suggestion-accepted
     stage: entry
     user: "I want to build a tool for job seekers, but I have not decided what problem it should solve."

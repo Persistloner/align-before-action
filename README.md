@@ -9,6 +9,7 @@
 - Use it when the idea is still forming and clarification matters more than speed.
 - Explicit invocation enters alignment immediately.
 - Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome; the skill can automatically detect those candidates from ordinary conversation.
+- When downstream skills such as `brainstorming` or `skill-creator` also apply, this skill acts as an upstream gate before their workflows start.
 - While aligned, the assistant asks one material question at a time, improves the idea step by step, and waits for explicit confirmation before acting.
 - The assistant can keep responses compact: summary first, then conclusion, then next step.
 - It may lightly rewrite wording when that helps, but it should not overwrite your voice.
@@ -44,6 +45,7 @@ It is not a mandatory questionnaire, an autonomous planning agent, or a substitu
 ## Key Behavior
 
 - Explicit invocation enters alignment immediately; implicit selection may only offer a concise, optional suggestion
+- When used with downstream design or creation skills, it resolves the alignment decision before those workflows begin
 - A short or colloquial request alone is not treated as vague
 - Replies in the user's language
 - One answer task per turn
@@ -155,6 +157,8 @@ Behavioral expectations are documented in [`evals/cases.yaml`](evals/cases.yaml)
 The skill keeps a small internal alignment map and selects the highest-impact question that can be answered now. Before it introduces assistant-authored solutions or trade-offs, it presents a standalone whole-understanding checkpoint; local answers cannot silently unlock improvement. When users are unsure, it moves through an assistance ladder: direct question, a covering option set only when needed, tentative wording, then a grounded recommendation. Option sets usually contain three to five materially distinct directions and are grouped when the decision space is larger. The improvement stage uses only the most relevant lens instead of dumping a comprehensive checklist. Final answers should stay compact: summary, conclusion, next step.
 
 The user may explicitly stop alignment and request a named immediate action. In that case, the assistant states the most material unresolved risk once, leaves alignment mode, and hands off without disguising the deliverable as another brief. For product, feature, architecture, or implementation design, this skill should usually hand off into `brainstorming`; for stress-testing assumptions and loopholes, it should usually hand off into `grilling`.
+
+When used with downstream design or creation skills such as `brainstorming`, `skill-creator`, or `writing-skills`, `Align Before Action` acts as the upstream gate. It may suggest alignment first, but downstream work starts only after the user accepts alignment, declines it, or explicitly asks to proceed.
 
 See [`NOTICE.md`](NOTICE.md) for the open-source projects that informed these mechanisms.
 
