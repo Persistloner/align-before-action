@@ -8,7 +8,7 @@
 
 - Use it when the idea is still forming and clarification matters more than speed.
 - Explicit invocation enters alignment immediately.
-- Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome.
+- Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome; the skill can automatically detect those candidates from ordinary conversation.
 - While aligned, the assistant asks one material question at a time, improves the idea step by step, and waits for explicit confirmation before acting.
 - The assistant can keep responses compact: summary first, then conclusion, then next step.
 - It may lightly rewrite wording when that helps, but it should not overwrite your voice.
@@ -69,6 +69,7 @@ Use it when you want the assistant to:
 - keep the conversation short and focused while the goal is still forming
 - hand off naturally into `brainstorming` for product or design work
 - hand off naturally into `grilling` when the idea needs stress testing
+- automatically notice a rough request and suggest alignment once, then wait for your confirmation
 
 You can invoke the skill directly:
 
@@ -98,7 +99,7 @@ Not a great fit:
 - tasks where you want a fast direct answer
 - cases where you explicitly want the assistant to skip discussion and act
 
-When you do not invoke it explicitly, the assistant may suggest entering the skill only when important unresolved decisions could make direct handling unreliable. The suggestion is non-blocking: declining it leaves the conversation in normal handling.
+When you do not invoke it explicitly, the assistant may automatically notice unresolved decisions and suggest entering the skill only when direct handling could be unreliable. The suggestion is non-blocking: declining it leaves the conversation in normal handling.
 
 ### Example Prompts
 

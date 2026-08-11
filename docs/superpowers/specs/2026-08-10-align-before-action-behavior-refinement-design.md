@@ -1,5 +1,7 @@
 # Align Before Action: Behavior Refinement Design
 
+> Status: Superseded. This design reflects the stage-transition refinement work before the later implicit-suggestion release and current README wording.
+
 ## Purpose
 
 Refine the skill after real and fresh-context testing revealed inconsistent phase transitions. Preserve its lightweight, conversational experience while making stage completion, information status, and early exit behavior observable and testable.

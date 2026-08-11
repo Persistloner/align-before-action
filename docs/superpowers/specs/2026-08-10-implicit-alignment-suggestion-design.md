@@ -1,5 +1,7 @@
 # Implicit Alignment Suggestion Design
 
+> Status: Implemented. The current `SKILL.md`, metadata, README files, and behavioral cases reflect this design.
+
 ## Goal
 
 Allow `align-before-action` to be discoverable from ordinary user messages while preserving explicit control over the full alignment workflow.

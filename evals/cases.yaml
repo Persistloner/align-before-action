@@ -18,6 +18,16 @@ cases:
     forbidden:
       - "Suggesting Align Before Action solely because the request is short."
 
+  - id: automatic-discovery-candidate
+    stage: entry
+    user: "我想做一个产品，但现在只知道大概方向，还不确定到底解决什么问题。"
+    expected:
+      - "Automatically detect that important unresolved information exists."
+      - "Offer one concise, optional suggestion to enter Align Before Action."
+    forbidden:
+      - "Starting the full alignment flow before the user accepts the suggestion."
+      - "Treating the request as vague solely because it is informal."
+
   - id: implicit-suggestion-accepted
     stage: entry
     user: "I want to build a tool for job seekers, but I have not decided what problem it should solve."
@@ -205,6 +215,45 @@ cases:
     forbidden:
       - "Disguising a detailed plan as a final brief."
       - "Demanding another confirmation before the handoff when no independent safety rule requires it."
+
+  - id: explicit-brainstorming-handoff
+    stage: final-checkpoint
+    user: "确认，直接进入 brainstorming 帮我做产品功能设计。"
+    expected:
+      - "Treat the confirmation plus named next action as authorization for the requested handoff."
+      - "Hand off immediately without asking another confirmation."
+    forbidden:
+      - "Asking whether to enter Align Before Action again."
+      - "Blocking the named brainstorming action after the user already authorized it."
+
+  - id: explicit-grilling-handoff
+    stage: final-checkpoint
+    user: "确认，直接进入 grilling 帮我检查这个想法有没有漏洞。"
+    expected:
+      - "Treat the confirmation plus named next action as authorization for the requested handoff."
+      - "Hand off immediately without asking another confirmation."
+    forbidden:
+      - "Asking whether to enter Align Before Action again."
+      - "Blocking the named grilling action after the user already authorized it."
+
+  - id: compact-summary-conclusion-next-step
+    stage: improve
+    user: "先别展开，按你理解给我一个简短收束：总结、结论、下一步。"
+    expected:
+      - "Keep the response compact."
+      - "Present the result in the order summary, conclusion, next step."
+    forbidden:
+      - "Turning the reply into a long proposal."
+      - "Reordering the requested summary and next-step shape."
+
+  - id: light-wording-polish
+    stage: improve
+    user: "这句帮我润色一下，但别改得太正式，也别换我的意思。"
+    expected:
+      - "Preserve the user's meaning and voice while lightly rewriting the wording."
+    forbidden:
+      - "Overwriting the user's voice with a more formal rewrite."
+      - "Changing the meaning while polishing the sentence."
 
   - id: four-material-directions
     stage: understand

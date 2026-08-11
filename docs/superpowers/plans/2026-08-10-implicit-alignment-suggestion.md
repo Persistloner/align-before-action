@@ -1,5 +1,7 @@
 # Implicit Alignment Suggestion Implementation Plan
 
+> Status: Completed. This plan was implemented in the current skill and public docs.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Add an opt-in-by-confirmation suggestion entry to `align-before-action` while preserving direct explicit invocation and the existing alignment and handoff contract.

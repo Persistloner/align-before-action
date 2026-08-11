@@ -16,6 +16,8 @@ Support two entry modes:
 - **Explicit mode:** When the user invokes `$align-before-action` or clearly asks to use this skill, enter `Understand` immediately. Do not ask whether the user wants to enter alignment.
 - **Suggestion mode:** When this skill is selected from an ordinary user message without explicit invocation, first perform a lightweight sufficiency check. If no unresolved item is likely to change the outcome, handle the request normally. If one or more high-impact unresolved items exist, send one concise, optional suggestion to enter alignment and ask whether the user accepts. Do not start the full questioning flow, create a deliverable, or take external action in that turn.
 
+Suggestion mode is the automatic discovery path. The assistant may identify candidate requests from normal conversation without the user naming the skill, but it only suggests alignment; it does not enter the full flow until the user accepts.
+
 The sufficiency check concerns decision-relevant uncertainty, not linguistic vagueness. Consider suggesting alignment when there are multiple plausible goals, unresolved audience or scope, contradictory constraints, missing success criteria, or a high-cost or irreversible action whose assumptions are not confirmed. Short, colloquial, or incomplete wording alone is not sufficient. Do not call the user's input vague or deficient as a reason to suggest the skill.
 
 If the user accepts the suggestion, switch to `Understand` and follow the rest of this contract. If the user declines, asks for a direct answer, or names an immediate action, honor that choice, do not repeat the suggestion in the same turn, and preserve normal safety and permission checks. For a fresh implicit request that refuses questions and names an immediate action, bypass alignment; state at most one material unresolved risk when it matters, then proceed with normal handling. Do not say alignment mode is ending unless alignment was already active. A suggestion is not user confirmation of any interpretation or authorization for execution.
@@ -25,6 +27,17 @@ If the user accepts the suggestion, switch to `Understand` and follow the rest o
 After explicit invocation or acceptance of an implicit suggestion, enter discussion-only mode. First understand the user's intent, then help improve it. Do not create durable deliverables, modify files or code, or take external action unless the user confirms the final brief and authorizes the next action, explicitly exits alignment and requests a named immediate action under Handoff, or explicitly requests an Interim Record that only preserves the discussion.
 
 Reply in the user's language. The user owns preferences and decisions. Challenge assumptions clearly but respectfully, explain why, offer a better framing when useful, and let the user decide. When the idea is already clear enough, keep the result compact: summarize first, then state the conclusion and next step. Keep any wording polish light unless the user asks for a deeper rewrite.
+
+## Auto-Suggestion Rules
+
+When deciding whether to suggest alignment, use the smallest reliable signal set:
+
+- suggest when the request has multiple plausible goals, unresolved scope, contradictory constraints, missing success criteria, or a high-cost / irreversible action whose assumptions are not confirmed
+- do not suggest based only on shortness, casual wording, or incomplete grammar
+- do not suggest when the user has already given enough context for a direct answer or explicitly asked for a named immediate action
+- suggest once, then wait for the user's choice
+
+Suggestion output should be a single short offer. It may mention that alignment would help, but it must not start the whole flow, present a draft brief, or ask multiple questions.
 
 ## Alignment Map
 
@@ -108,6 +121,7 @@ Omit empty fields. Keep the final brief compact enough that the user can read it
 - Suggest `grilling` for stress-testing assumptions, loopholes, and failure modes.
 - For daily goals, expression, decisions, or simple requests, keep the result as a clear brief or ask whether the user wants help turning it into a plan.
 - Never auto-switch into another skill without user confirmation.
+- Automatic discovery may suggest this skill from a normal conversation; handoff still requires explicit user acceptance.
 
 ## Interim Records
 

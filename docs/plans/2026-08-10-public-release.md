@@ -1,5 +1,7 @@
 # Align Before Action: Public Release Plan
 
+> Status: Completed. This plan captures the release work before later behavioral refinements and implicit suggestion updates.
+
 ## Goal
 
 Publish a reusable Codex skill that changes the interaction contract from immediate execution to explicit alignment: understand the user's intent, help improve it, confirm the shared brief, and act only after unambiguous authorization.
