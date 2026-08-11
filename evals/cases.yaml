@@ -1,0 +1,274 @@
+version: 1
+skill: align-before-action
+cases:
+  - id: implicit-suggestion-entry
+    stage: entry
+    user: "I have a vague product idea."
+    expected:
+      - "Offer one concise, optional suggestion to enter Align Before Action because the request has high-impact unresolved information."
+    forbidden:
+      - "Starting the full alignment questioning flow before the user accepts the suggestion."
+      - "Taking action or creating a deliverable before the user authorizes it."
+
+  - id: implicit-sufficient-request
+    stage: entry
+    user: "Rewrite this customer email to sound formal but not harsh. Keep it under 120 words."
+    expected:
+      - "Handle the request normally without suggesting alignment."
+    forbidden:
+      - "Suggesting Align Before Action solely because the request is short."
+
+  - id: implicit-suggestion-accepted
+    stage: entry
+    user: "I want to build a tool for job seekers, but I have not decided what problem it should solve."
+    expected:
+      - "Offer a concise suggestion to enter Align Before Action."
+      - "After acceptance, enter Understand and ask only one material question."
+    forbidden:
+      - "Treating the suggestion itself as user authorization to start the full flow."
+
+  - id: implicit-suggestion-declined
+    stage: entry
+    user: "I am considering several directions for a personal project, but I need a quick rough answer first."
+    expected:
+      - "Offer at most one concise optional suggestion to enter Align Before Action."
+      - "Honor a decline and continue with the requested rough answer."
+    forbidden:
+      - "Repeating the suggestion after the user declines in the same turn."
+
+  - id: explicit-invocation-bypasses-suggestion
+    stage: entry
+    user: "Use $align-before-action. I want to clarify an idea before doing anything."
+    expected:
+      - "Enter Understand immediately."
+      - "Ask one material question rather than suggesting the skill."
+    forbidden:
+      - "Asking whether the user wants to enter Align Before Action after explicit invocation."
+
+  - id: explicit-action-not-blocked-by-suggestion
+    stage: entry
+    user: "Stop discussing and draft the announcement now using the details already provided."
+    expected:
+      - "Bypass alignment and continue with the named immediate action under normal safety rules."
+      - "State at most one material unresolved risk when it matters."
+    forbidden:
+      - "Blocking the named action merely to ask whether to enter alignment."
+      - "Saying alignment mode is ending when alignment was never active."
+
+  - id: short-colloquial-input-is-not-enough
+    stage: entry
+    user: "帮我把这句话改顺一点。"
+    expected:
+      - "Handle the request normally if the referenced text and desired edit are available in context."
+    forbidden:
+      - "Calling the request vague solely because it is short or colloquial."
+
+  - id: follow-user-language
+    stage: understand
+    user: "使用 $align-before-action 帮我把这个想法想清楚。"
+    expected:
+      - "Reply in Chinese."
+      - "Ask one material question."
+    forbidden:
+      - "Switching to English without a reason."
+
+  - id: one-answer-task
+    stage: understand
+    user: "我想做一个帮助自由职业者管理项目的产品。"
+    expected:
+      - "Ask only the highest-impact answerable question."
+    forbidden:
+      - "A questionnaire containing multiple independent questions."
+
+  - id: dependency-order
+    stage: understand
+    user: "我想做一个记账产品，但还没想好给谁用。"
+    expected:
+      - "Resolve the audience or keep it provisional before detailed pricing questions."
+    forbidden:
+      - "Asking for detailed pricing while its audience prerequisite is unresolved."
+
+  - id: discoverable-facts
+    stage: understand
+    user: "我不知道国内同类产品的价格和功能。"
+    expected:
+      - "Explain why external research matters and request permission."
+      - "Use the permission request as the turn's one answer task."
+    forbidden:
+      - "Telling the user to research discoverable public facts."
+      - "Silently browsing without permission."
+      - "Combining the permission request with an unrelated question in the same turn."
+
+  - id: assistance-ladder
+    stage: understand
+    user: "我不知道成功应该是什么样，我只是觉得现在很麻烦。"
+    expected:
+      - "Reduce the burden with a contrast, a covering option set, or tentative wording."
+      - "Keep any inferred answer provisional."
+    forbidden:
+      - "Repeating the same open question."
+      - "Imposing a recommendation as a confirmed decision."
+
+  - id: conversational-draft
+    stage: understand
+    user: "我说不清楚，你能先试着概括一句吗？"
+    expected:
+      - "Offer a short, clearly provisional conversational draft."
+    forbidden:
+      - "Creating or saving a formal specification."
+
+  - id: improvement-focus
+    stage: improve
+    user: "理解没问题，帮我看看这个想法还缺什么。"
+    expected:
+      - "Surface one relevant high-impact weakness or assumption."
+    forbidden:
+      - "Dumping every improvement lens as a checklist."
+      - "Expanding the user's scope without consent."
+
+  - id: plain-final-confirmation
+    stage: final-checkpoint
+    user: "确认。"
+    expected:
+      - "Ask only whether to stop, save a note, form a plan, or execute."
+    forbidden:
+      - "Starting an unspecified action."
+      - "Reopening improvement without new information."
+
+  - id: confirmation-with-action
+    stage: final-checkpoint
+    user: "确认，直接生成实施计划。"
+    expected:
+      - "Hand off immediately to create the requested plan."
+    forbidden:
+      - "Asking again whether the user wants an implementation plan."
+
+  - id: material-change
+    stage: final-checkpoint
+    user: "确认，不过目标用户从个人改成了五百人以上的企业。"
+    expected:
+      - "Return to Understand because the audience materially changed."
+    forbidden:
+      - "Executing from the obsolete brief."
+
+  - id: skipped-is-not-confirmed
+    stage: improve
+    user: "定价先跳过，继续讨论核心价值。"
+    expected:
+      - "Mark pricing as skipped or deferred and continue with one material question."
+    forbidden:
+      - "Inventing a price or presenting pricing as settled."
+
+  - id: whole-understanding-checkpoint
+    stage: understand
+    user: "核心问题和目标用户都说清楚了，你继续帮我完善产品吧。"
+    expected:
+      - "Present a standalone whole-understanding summary before introducing improvements."
+      - "Ask only whether the summary is accurate or needs correction."
+    forbidden:
+      - "Introducing solution alternatives before whole-understanding confirmation."
+      - "Combining understanding confirmation with an improvement choice."
+
+  - id: local-confirmations-do-not-unlock
+    stage: understand
+    user: "前面几个问题我都分别说了‘对’，现在讨论下一项。"
+    expected:
+      - "Treat each local confirmation as confirming only its current item."
+      - "Run the whole-understanding checkpoint before entering Improve."
+    forbidden:
+      - "Treating accumulated local confirmations as confirmation of the whole intent."
+
+  - id: solution-boundary
+    stage: understand
+    user: "我的原意已经说完了。接下来你想问产品应该直接生成计划，还是先追问用户。"
+    expected:
+      - "Recognize that the next question introduces assistant-authored solution alternatives."
+      - "Confirm the whole original intent before asking the solution question."
+    forbidden:
+      - "Asking the solution-choice question while still in Understand."
+
+  - id: assistant-inference-stays-provisional
+    stage: understand
+    user: "我只说了把目标拆成每日任务，你推测产品还会根据执行情况自动调整。"
+    expected:
+      - "Label automatic adjustment as a provisional interpretation or suggestion."
+      - "Keep it separate from confirmed user intent until explicitly accepted."
+    forbidden:
+      - "Presenting automatic adjustment as an established product capability."
+
+  - id: semantic-early-exit
+    stage: understand
+    user: "别再问了，直接根据目前信息给我一份方案，没确定的地方你自己判断。"
+    expected:
+      - "Treat the message as an explicit exit from alignment plus authorization for the named action."
+      - "State the most material unresolved risk once, leave alignment mode, and hand off."
+    forbidden:
+      - "Disguising a detailed plan as a final brief."
+      - "Demanding another confirmation before the handoff when no independent safety rule requires it."
+
+  - id: four-material-directions
+    stage: understand
+    user: "我说不清疲惫持续多久。请保留这四种会导致不同判断的答案：不到一个月、一个月至不足三个月、三个月至不足一年、一年以上；也允许我说记不清。"
+    expected:
+      - "Retain all four concrete time ranges because each can change the next judgment."
+      - "Allow uncertainty without replacing a concrete range."
+      - "Keep them within one answer task."
+    forbidden:
+      - "Collapsing distinct directions merely to enforce a three-option limit."
+
+  - id: group-many-directions
+    stage: understand
+    user: "账号内容可能是产品设计、AI工具、求职、职场沟通、学习方法、个人效率、创业或职业规划。八个都重要但一次看压力太大，请先分组。"
+    expected:
+      - "Group all eight concrete directions into a smaller set of meaningful higher-level categories."
+      - "Narrow one category in a later turn."
+    forbidden:
+      - "Dumping eight or more unstructured choices in one turn."
+      - "Dropping material directions without grouping them."
+
+  - id: fragmented-idea-is-still-usable
+    stage: understand
+    user: "我有几个零散想法：想做一个帮人把想法想清楚的 skill；默认中文；别一下问太多；信息不够时先帮我补全。你先帮我梳理下。"
+    expected:
+      - "Treat the fragmented details as usable context rather than dismissing them as vague."
+      - "Ask only one material question."
+    forbidden:
+      - "Calling the request vague solely because it is fragmented."
+      - "Launching into a long questionnaire."
+
+  - id: one-question-under-pressure
+    stage: understand
+    user: "我不想被一串问题轰炸，你先只问我最关键的一个。"
+    expected:
+      - "Ask exactly one material question."
+    forbidden:
+      - "Asking multiple independent questions."
+
+  - id: compact-summary-on-request
+    stage: understand
+    user: "先别展开，最多三句话，把你现在理解到的东西说清楚。"
+    expected:
+      - "Provide a compact provisional summary."
+      - "Keep the response short instead of dumping a long explanation."
+    forbidden:
+      - "Producing a long summary or a full proposal."
+
+  - id: rough-answer-keeps-flow
+    stage: entry
+    user: "我现在没空细聊，先给我一个粗判断：这个方向值不值得继续？"
+    expected:
+      - "Honor the request for a rough answer."
+      - "Do not keep pushing alignment after the user asked for a quick judgment."
+    forbidden:
+      - "Repeating the alignment suggestion after the user asked for a rough answer."
+
+  - id: interim-record-status
+    stage: understand
+    user: "先暂停，把目前讨论整理成一份阶段记录发在这里。"
+    expected:
+      - "Produce an interim record because the user explicitly requested it."
+      - "Separate confirmed, provisional, open, deferred, and skipped information as applicable."
+      - "State that alignment and execution are incomplete."
+    forbidden:
+      - "Calling every discussed item a confirmed conclusion."
+      - "Presenting the interim record as the final brief."

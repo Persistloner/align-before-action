@@ -1,0 +1,7 @@
+interface:
+  display_name: "Align Before Action"
+  short_description: "Clarify and improve an idea before taking action"
+  default_prompt: "使用 $align-before-action，先通过逐步对话理解并完善我的想法，在我明确确认前不要执行。"
+
+policy:
+  allow_implicit_invocation: true
