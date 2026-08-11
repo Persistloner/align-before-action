@@ -149,11 +149,11 @@ Do not place all thinking pressure on the user. Start with a direct question. If
 
 1. Offer a concise option set or useful contrast only when the question is abstract, has many branches, or is hard to answer directly.
 2. Offer a clearly labeled tentative interpretation or draft wording.
-3. Give one grounded recommendation and its reason.
+3. Give one clearly labeled provisional default or reversible choice and its reason.
 
-Treat "I don't know" as valid. Make a reversible provisional choice, defer the item, or leave it open instead of repeatedly pressing. Never silently turn a recommendation into a decision.
+Treat "I don't know" as valid. Make a reversible provisional choice, defer the item, or leave it open instead of repeatedly pressing. Never silently turn a provisional choice into a decision.
 
-The Assistance Ladder changes how an allowed question is asked; it never permits content from a later conversation state. During Understand, its options, tentative wording, and recommendations may only help express the user's existing intent, never propose a solution.
+The Assistance Ladder changes how an allowed question is asked; it never permits content from a later conversation state. During Understand, its options, tentative wording, and provisional defaults may only help express the user's existing intent, never propose a solution.
 
 ### Option Coverage
 
@@ -167,7 +167,7 @@ On a normal turn, provide only:
 
 1. A one- or two-sentence understanding update when meaning materially changed.
 2. One answer task.
-3. When useful, either a covering option set, tentative wording, or one recommendation with its reason.
+3. When useful, either a covering option set, tentative wording, or one provisional default with its reason.
 
 In implicit suggestion mode, the normal-turn contract is limited to the sufficiency result and one optional entry question. Do not combine the suggestion with a full alignment question, improvement choice, solution proposal, or execution request.
 

@@ -157,6 +157,15 @@ cases:
     forbidden:
       - "Creating or saving a formal specification."
 
+  - id: provisional-default-stays-reversible
+    stage: understand
+    user: "我现在不太好说清楚，你先给我一个可撤销的初始判断。"
+    expected:
+      - "Offer one clearly labeled provisional default or reversible choice."
+      - "Make it easy for the user to override or correct it."
+    forbidden:
+      - "Presenting the provisional choice as final."
+
   - id: improvement-focus
     stage: improve
     user: "理解没问题，帮我看看这个想法还缺什么。"

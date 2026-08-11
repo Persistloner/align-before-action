@@ -57,7 +57,7 @@ Classify assistant-authored solution alternatives, new capabilities, recommendat
 
 - [x] **Step 3: Add status promotion rules**
 
-Keep assistant interpretations provisional and recommendations suggested until explicit user acceptance. Prevent summaries from silently upgrading them.
+Keep assistant interpretations provisional and any suggested defaults reversible until explicit user acceptance. Prevent summaries from silently upgrading them.
 
 - [x] **Step 4: Resolve early-exit behavior**
 

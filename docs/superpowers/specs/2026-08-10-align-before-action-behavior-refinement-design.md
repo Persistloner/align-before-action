@@ -109,7 +109,7 @@ Normal turns remain lightweight:
 
 1. Give a brief understanding update only when meaning changed.
 2. Present one answer task.
-3. Add options, tentative wording, or one recommendation only when it reduces user effort.
+3. Add options, tentative wording, or one provisional default only when it reduces user effort.
 
 Checkpoint turns are exceptions only in that they may contain the concise whole understanding or final brief. They still ask for one response: confirm or correct.
 
