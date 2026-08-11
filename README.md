@@ -1,6 +1,6 @@
 # Align Before Action
 
-`Align Before Action` helps you clarify an idea before turning it into action. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. You can invoke it directly, and the assistant may also suggest it when important details are still missing. Once active, it helps align on the goal, work through key gaps step by step, confirm the final brief, and act only after your explicit approval.
+`Align Before Action` helps you clarify an idea before turning it into action. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. It works for product ideas, daily decisions, writing, requests, and any rough thought that needs a clearer shape first. You can invoke it directly, and the assistant may also suggest it when important details are still missing. Once active, it helps align on the goal, work through key gaps step by step, confirm the final brief, and act only after your explicit approval.
 
 [简体中文说明](README.zh-CN.md)
 
@@ -10,6 +10,8 @@
 - Explicit invocation enters alignment immediately.
 - Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome.
 - While aligned, the assistant asks one material question at a time, improves the idea step by step, and waits for explicit confirmation before acting.
+- The assistant can keep responses compact: summary first, then conclusion, then next step.
+- It may lightly rewrite wording when that helps, but it should not overwrite your voice.
 - If the user wants a direct answer or named immediate action, the skill respects that.
 
 ## Why It Exists
@@ -65,6 +67,8 @@ Use it when you want the assistant to:
 - ask for the most important missing detail instead of guessing
 - help you improve the idea before execution
 - keep the conversation short and focused while the goal is still forming
+- hand off naturally into `brainstorming` for product or design work
+- hand off naturally into `grilling` when the idea needs stress testing
 
 You can invoke the skill directly:
 
@@ -147,9 +151,9 @@ Behavioral expectations are documented in [`evals/cases.yaml`](evals/cases.yaml)
 
 ## Design Notes
 
-The skill keeps a small internal alignment map and selects the highest-impact question that can be answered now. Before it introduces assistant-authored solutions or trade-offs, it presents a standalone whole-understanding checkpoint; local answers cannot silently unlock improvement. When users are unsure, it moves through an assistance ladder: direct question, a covering option set, tentative wording, then a grounded recommendation. Option sets usually contain three to five materially distinct directions and are grouped when the decision space is larger. The improvement stage uses only the most relevant lens instead of dumping a comprehensive checklist.
+The skill keeps a small internal alignment map and selects the highest-impact question that can be answered now. Before it introduces assistant-authored solutions or trade-offs, it presents a standalone whole-understanding checkpoint; local answers cannot silently unlock improvement. When users are unsure, it moves through an assistance ladder: direct question, a covering option set only when needed, tentative wording, then a grounded recommendation. Option sets usually contain three to five materially distinct directions and are grouped when the decision space is larger. The improvement stage uses only the most relevant lens instead of dumping a comprehensive checklist. Final answers should stay compact: summary, conclusion, next step.
 
-The user may explicitly stop alignment and request a named immediate action. In that case, the assistant states the most material unresolved risk once, leaves alignment mode, and hands off without disguising the deliverable as another brief.
+The user may explicitly stop alignment and request a named immediate action. In that case, the assistant states the most material unresolved risk once, leaves alignment mode, and hands off without disguising the deliverable as another brief. For product, feature, architecture, or implementation design, this skill should usually hand off into `brainstorming`; for stress-testing assumptions and loopholes, it should usually hand off into `grilling`.
 
 See [`NOTICE.md`](NOTICE.md) for the open-source projects that informed these mechanisms.
 
