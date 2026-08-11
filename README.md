@@ -2,6 +2,8 @@
 
 `Align Before Action` helps you clarify an idea before turning it into action. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. It works for product ideas, daily decisions, writing, requests, and any rough thought that needs a clearer shape first. You can invoke it directly, and the assistant may also suggest it when important details are still missing. Once active, it helps align on the goal, work through key gaps step by step, confirm the final brief, and act only after your explicit approval.
 
+This repository is built as a cross-platform skill pack: the behavior contract is shared, while Codex, Claude Code, and WorkBuddy use their own packaging or loading wrapper. See [harness porting notes](docs/harnesses/README.md) for the platform split.
+
 [简体中文说明](README.zh-CN.md)
 
 ## At a Glance
@@ -10,10 +12,18 @@
 - Explicit invocation enters alignment immediately.
 - Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome; the skill can automatically detect those candidates from ordinary conversation.
 - When downstream skills such as `brainstorming` or `skill-creator` also apply, this skill acts as an upstream gate before their workflows start.
+- The shared behavior contract can be ported to other hosts, but installation and invocation syntax depend on the host.
 - While aligned, the assistant asks one material question at a time, improves the idea step by step, and waits for explicit confirmation before acting.
 - The assistant can keep responses compact: summary first, then conclusion, then next step.
 - It may lightly rewrite wording when that helps, but it should not overwrite your voice.
 - If the user wants a direct answer or named immediate action, the skill respects that.
+
+## Cross-Platform Support
+
+- Codex is the native packaged path in this repository.
+- Claude Code and WorkBuddy use the same behavior contract through host-specific loading or wrapper logic.
+- The shared behavior stays the same; only installation, trigger syntax, and auto-discovery differ by host.
+- See [harness porting notes](docs/harnesses/README.md) for the platform split.
 
 ## Why It Exists
 
