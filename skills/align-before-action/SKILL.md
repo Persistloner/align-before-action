@@ -1,9 +1,13 @@
 ---
 name: align-before-action
-description: Use when a user's idea, requirement, goal, decision, or intended outcome may contain high-impact unresolved information before action, or when the user explicitly asks to clarify or improve it.
+description: Use when a user's idea, requirement, goal, decision, request, or intended outcome is still unclear, incomplete, contradictory, high-impact, or hard to express before action; also use when they want help clarifying, improving, or lightly rewriting a vague idea, daily goal, message, or plan.
 ---
 
 # Align Before Action
+
+## Core role
+
+Align Before Action is an upstream clarification layer. It helps turn a rough thought into a clear, low-risk brief before the assistant acts. Use it for product ideas, daily goals, decisions, writing, requests, and any task where the next step depends on unconfirmed assumptions.
 
 ## Entry Modes
 
@@ -20,7 +24,7 @@ If the user accepts the suggestion, switch to `Understand` and follow the rest o
 
 After explicit invocation or acceptance of an implicit suggestion, enter discussion-only mode. First understand the user's intent, then help improve it. Do not create durable deliverables, modify files or code, or take external action unless the user confirms the final brief and authorizes the next action, explicitly exits alignment and requests a named immediate action under Handoff, or explicitly requests an Interim Record that only preserves the discussion.
 
-Reply in the user's language. The user owns preferences and decisions. Challenge assumptions clearly but respectfully, explain why, offer a better framing when useful, and let the user decide.
+Reply in the user's language. The user owns preferences and decisions. Challenge assumptions clearly but respectfully, explain why, offer a better framing when useful, and let the user decide. When the idea is already clear enough, keep the result compact: summarize first, then state the conclusion and next step. Keep any wording polish light unless the user asks for a deeper rewrite.
 
 ## Alignment Map
 
@@ -46,6 +50,8 @@ Use unresolved dependencies as a question frontier. Ask the highest-impact quest
 
 Tentative wording and contrasts may help the user express existing intent. In Understand, do not introduce assistant-authored solution choices, new capabilities, recommendations, or trade-offs, even as provisional suggestions. A question or recommendation about how a product, artifact, process, or system should behave, be structured, or be delivered is solution content unless the user already introduced it and the assistant is only resolving its meaning. Before any solution content, stop and run the Whole Understanding Checkpoint.
 
+Default to one direct question. Add 2-4 options only when the question is abstract, has many branches, or is hard to answer directly. If the user gives several ideas at once, separate the mainline from sidelined items, park the sidelined items, and continue with the mainline first.
+
 ### 2. Whole Understanding Checkpoint
 
 Before Improve, send a standalone whole-understanding message. Include only the relevant original intent, confirmed user statements, provisional assistant interpretations, and material open, deferred, or skipped items. Its only answer task is to confirm or correct that understanding; do not include an improvement choice, recommendation, or execution request.
@@ -69,6 +75,8 @@ Apply one relevant, high-impact lens at a time:
 
 Do not run every lens or turn the process into a checklist. Distinguish confirmed facts, provisional hypotheses, and suggestions. Do not expand scope or take ownership of the idea.
 
+When the user already has enough information, keep the output short and stable: summary, conclusion, then next step. For light wording help, preserve the user's meaning and voice; only rewrite more aggressively when the user asks for it.
+
 When the idea is sufficiently clear, present a concise final brief containing the relevant confirmed goals, decisions, success criteria, and constraints. Preserve provisional, open, deferred, skipped, declined, and unaccepted items with their actual status. Request explicit confirmation.
 
 ### 4. Handoff
@@ -84,6 +92,23 @@ The confirmed final brief becomes the source of truth for downstream work. Do no
 
 Before final confirmation, the user may explicitly leave alignment and request a named immediate action. Natural language that clearly combines stopping discussion or questions with "do this now" counts as an explicit exit; the user need not name the skill. State the most material unresolved risk once, say that alignment mode is ending, and hand off to the named action. Do not disguise a deliverable as a brief or demand another confirmation unless safety or platform policy independently requires one.
 
+## Output Shape
+
+Use the smallest shape that fits the moment:
+
+- Summary: what the user said and what is already confirmed
+- Conclusion: the current understanding or judgment
+- Next step: the best follow-up, if any
+
+Omit empty fields. Keep the final brief compact enough that the user can read it quickly and correct it easily.
+
+## Downstream Handoff
+
+- Suggest `brainstorming` for product, feature, architecture, or implementation design.
+- Suggest `grilling` for stress-testing assumptions, loopholes, and failure modes.
+- For daily goals, expression, decisions, or simple requests, keep the result as a clear brief or ask whether the user wants help turning it into a plan.
+- Never auto-switch into another skill without user confirmation.
+
 ## Interim Records
 
 If the user pauses and explicitly requests a record before final confirmation, produce an interim record without executing the underlying task. A request to preserve only the discussion is not an early exit into execution.
@@ -94,7 +119,7 @@ Label the record as interim. Separate confirmed, provisional, open, deferred, an
 
 Do not place all thinking pressure on the user. Start with a direct question. If the user cannot answer, escalate only as needed:
 
-1. Offer a concise option set or useful contrast that covers the materially different directions.
+1. Offer a concise option set or useful contrast only when the question is abstract, has many branches, or is hard to answer directly.
 2. Offer a clearly labeled tentative interpretation or draft wording.
 3. Give one grounded recommendation and its reason.
 
@@ -121,6 +146,14 @@ In implicit suggestion mode, the normal-turn contract is limited to the sufficie
 Do not combine a choice with a request for reasons, examples, and extra details. Ask those later only if they remain material. Do not preview the full process, expose internal reasoning, repeat settled context, list every alternative, or overload the user with a large summary.
 
 Short, reversible conversational sketches or tentative phrasing are allowed when they reduce ambiguity. Label them as provisional. Except for an explicitly requested Interim Record, a polished specification, plan, report, saved note, file, message, or other durable artifact requires either final confirmation plus explicit authorization, or an explicit early exit plus a named immediate action under Handoff.
+
+## Common Mistakes
+
+- Turning alignment into endless questioning.
+- Asking for details that will not change the next step.
+- Treating short input as automatically vague.
+- Overwriting the user's voice when a light polish is enough.
+- Auto-executing or auto-switching without confirmation.
 
 ## Tool Boundary
 
