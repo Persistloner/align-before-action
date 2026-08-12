@@ -1,6 +1,6 @@
 # Align Before Action
 
-`Align Before Action` helps you clarify an idea before turning it into action. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. It works for product ideas, daily decisions, writing, requests, and any rough thought that needs a clearer shape first. You can invoke it directly, and the assistant may also suggest it when important details are still missing. Once active, it helps align on the goal, work through key gaps step by step, confirm the final brief, and act only after your explicit approval.
+`Align Before Action` is a guided clarification workflow for thinking before acting. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. It works for product ideas, daily decisions, writing, requests, and any rough thought that needs a clearer shape first. Its primary method is guided clarification, with lightweight Socratic questioning used selectively to surface assumptions, trade-offs, or hidden gaps. Once active, it helps the assistant understand your original intent, work through key gaps with you, improve the idea without taking it over, confirm the final brief, and act only after your explicit approval.
 
 This repository is built as a cross-platform skill pack: the behavior contract is shared, while Codex, Claude Code, and WorkBuddy use their own packaging or loading wrapper. See [harness porting notes](docs/harnesses/README.md) for the platform split.
 
@@ -8,13 +8,17 @@ This repository is built as a cross-platform skill pack: the behavior contract i
 
 ## At a Glance
 
-- Use it when the idea is still forming and clarification matters more than speed.
+- Use it when the idea is still forming and guided clarification matters more than speed.
 - Explicit invocation enters alignment immediately.
 - Ordinary requests may get one short, optional suggestion when unresolved information could change the outcome; the skill can automatically detect those candidates from ordinary conversation.
-- When downstream skills such as `brainstorming` or `skill-creator` also apply, this skill acts as an upstream gate before their workflows start.
+- Automatic loading is not consent: when the user has not invoked or accepted it, the assistant may give a brief reasoned suggestion and offer a rough-judgment alternative, but it must not start alignment or a plan.
+- When downstream skills also apply, this skill acts as an upstream gate before their workflows start.
+- After understanding is confirmed, the assistant identifies the capability needed next and recommends a matching available skill or a no-skill fallback. `brainstorming`, `grilling`, and `grill-me` are examples, not required dependencies.
 - The shared behavior contract can be ported to other hosts, but installation and invocation syntax depend on the host.
-- While aligned, the assistant asks one material question at a time, improves the idea step by step, and waits for explicit confirmation before acting.
+- While aligned, the assistant usually advances one material question at a time, but may combine closely related questions when that reduces friction or the user asks for a broader pass.
+- It may use a lightweight Socratic question to expose an assumption or trade-off, but it does not turn every turn into a debate or interrogation.
 - The assistant can keep responses compact: summary first, then conclusion, then next step.
+- Confirming that the assistant understood correctly is not execution approval; it triggers a concise next-step recommendation or a small choice set.
 - It may lightly rewrite wording when that helps, but it should not overwrite your voice.
 - If the user wants a direct answer or named immediate action, the skill respects that.
 
@@ -39,11 +43,16 @@ flowchart LR
     S -->|"User accepts"| B2["Understand intent"]
     A2["User explicitly invokes"] --> B2
     B2 --> C["Confirm understanding"]
-    C --> D["Improve one material gap"]
+    C --> P["Identify needed capability"]
+    P --> R{"User chooses a route"}
+    R -->|"Keep refining"| D["Improve one material gap"]
+    R -->|"Named discussion handoff"| W["Start selected downstream discussion"]
+    R -->|"Summary or interim record"| T["Preserve current understanding"]
+    R -->|"Stop"| H["End alignment"]
     D --> E["Confirm final brief"]
     E --> F{"Next action specified?"}
     F -->|"Yes"| G["Hand off and act"]
-    F -->|"No"| H["Ask what to do next"]
+    F -->|"No"| Q["Ask what to do next"]
     X["User explicitly exits and names an action"] --> G
     B2 -.-> X
     C -.-> X
@@ -58,13 +67,18 @@ It is not a mandatory questionnaire, an autonomous planning agent, or a substitu
 - When used with downstream design or creation skills, it resolves the alignment decision before those workflows begin
 - A short or colloquial request alone is not treated as vague
 - Replies in the user's language
-- One answer task per turn
+- One answer task per turn by default; closely related tasks may be combined when that is easier for the user
 - Questions follow decision dependencies
 - A standalone whole-understanding confirmation before improvement
+- After that confirmation, a concise next-step recommendation instead of silent stopping or automatic execution
+- Next-step routing starts with the needed capability, then considers available skills and ordinary assistant capabilities
+- Missing example skills never block the flow or trigger automatic installation
 - Local answers confirm only the item currently being discussed
 - Discoverable facts are not pushed back to the user
 - Progressive help when the user says "I don't know"
-- Usually three to five options that cover materially different directions; larger sets are grouped
+- Clearly requested bounded conversational actions, such as light rewriting or a rough judgment, are completed without a second authorization prompt
+- When the user does not know, the assistant may offer a few clearly labeled exploratory hypotheses without turning them into decisions
+- The smallest option set that covers materially different directions, often two to four; larger sets are grouped
 - One high-impact improvement at a time
 - Clear statuses for confirmed, provisional, deferred, and skipped items
 - No durable deliverable or state-changing action before confirmation and authorization, unless the user explicitly exits alignment and names the immediate action
@@ -79,8 +93,8 @@ Use it when you want the assistant to:
 - ask for the most important missing detail instead of guessing
 - help you improve the idea before execution
 - keep the conversation short and focused while the goal is still forming
-- hand off naturally into `brainstorming` for product or design work
-- hand off naturally into `grilling` when the idea needs stress testing
+- use a suitable installed skill when its declared purpose matches the next step
+- continue without another skill when none is installed or needed
 - automatically notice a rough request and suggest alignment once, then wait for your confirmation
 
 You can invoke the skill directly:
@@ -111,7 +125,7 @@ Not a great fit:
 - tasks where you want a fast direct answer
 - cases where you explicitly want the assistant to skip discussion and act
 
-When you do not invoke it explicitly, the assistant may automatically notice unresolved decisions and suggest entering the skill only when direct handling could be unreliable. The suggestion is non-blocking: declining it leaves the conversation in normal handling.
+When you do not invoke it explicitly, the assistant may notice unresolved decisions and suggest entering the skill only when direct handling could be unreliable. The suggestion can briefly explain the risk and offer a rough judgment instead; it is non-blocking, so declining it leaves the conversation in normal handling.
 
 ### Example Prompts
 
@@ -164,11 +178,11 @@ Behavioral expectations are documented in [`evals/cases.yaml`](evals/cases.yaml)
 
 ## Design Notes
 
-The skill keeps a small internal alignment map and selects the highest-impact question that can be answered now. Before it introduces assistant-authored solutions or trade-offs, it presents a standalone whole-understanding checkpoint; local answers cannot silently unlock improvement. When users are unsure, it moves through an assistance ladder: direct question, a covering option set only when needed, tentative wording, then one clearly labeled provisional default or reversible choice. Option sets usually contain three to five materially distinct directions and are grouped when the decision space is larger. The improvement stage uses only the most relevant lens instead of dumping a comprehensive checklist. Final answers should stay compact: summary, conclusion, next step.
+The skill keeps a small internal alignment map and selects the highest-impact question that can be answered now. Before it introduces unrequested solution content, it presents a standalone whole-understanding checkpoint; local answers cannot silently unlock improvement. When the user confirms the understanding, the assistant treats that as alignment only, then suggests the best next route or offers a small set of meaningful paths. When users are unsure, it moves through an assistance ladder: direct question, a covering option set only when needed, exploratory hypotheses or tentative wording, then one clearly labeled provisional default or reversible choice. Explicitly requested light actions remain available once their meaning is clear; they do not require a second authorization question unless they would change external state. Option sets use the smallest number of materially distinct directions, often two to four, and are grouped when the decision space is larger. The improvement stage uses only the most relevant lens instead of dumping a comprehensive checklist. Final answers should stay compact: summary, conclusion, next step.
 
-The user may explicitly stop alignment and request a named immediate action. In that case, the assistant states the most material unresolved risk once, leaves alignment mode, and hands off without disguising the deliverable as another brief. For product, feature, architecture, or implementation design, this skill should usually hand off into `brainstorming`; for stress-testing assumptions and loopholes, it should usually hand off into `grilling`.
+The user may explicitly stop alignment and request a named immediate action. In that case, the assistant states the most material unresolved risk once, leaves alignment mode, and hands off without disguising the deliverable as another brief. For every next step, the assistant first identifies the needed capability, then considers the skills exposed by the current host. A skill is named only when its declared purpose fits and it is known to be available; otherwise the assistant offers to continue without another skill. For example, some environments may use `brainstorming` for design and `grilling` or `grill-me` for stress-testing, but these names are examples rather than dependencies.
 
-When used with downstream design or creation skills such as `brainstorming`, `skill-creator`, or `writing-skills`, `Align Before Action` acts as the upstream gate. It may suggest alignment first, but downstream work starts only after the user accepts alignment, declines it, or explicitly asks to proceed.
+When used with downstream skills, `Align Before Action` acts as the upstream gate. Mentioning a domain or skill only makes a downstream workflow potentially relevant. Even after the understanding is confirmed, the assistant first recommends a capability-based route; it does not automatically execute or hand off. A confirmed Final Brief plus an explicit next action authorizes the handoff. Missing skills do not block the conversation, and the skill never installs another skill without an explicit request.
 
 See [`NOTICE.md`](NOTICE.md) for the open-source projects that informed these mechanisms.
 

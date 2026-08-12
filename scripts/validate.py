@@ -70,6 +70,39 @@ def main() -> None:
         if not case.get("expected") or not case.get("forbidden"):
             fail(f"case {case.get('id')} needs expected and forbidden assertions")
 
+    required_case_ids = {
+        "post-confirmation-routes-by-capability",
+        "missing-example-skill-has-fallback",
+        "available-skill-can-replace-examples",
+        "understanding-confirmation-does-not-authorize-execution",
+        "summary-brief-and-interim-record-are-distinct",
+        "one-question-rule-is-a-default",
+        "option-count-is-adaptive",
+        "challenge-only-material-assumptions",
+        "explicit-research-request-needs-no-duplicate-permission",
+        "preserve-explicit-bounded-conversational-action",
+        "exploratory-candidates-for-unknowns",
+    }
+    missing_case_ids = required_case_ids.difference(ids)
+    if missing_case_ids:
+        fail(f"missing dynamic-routing cases: {', '.join(sorted(missing_case_ids))}")
+
+    skill_lower = skill_text.lower()
+    dynamic_routing_markers = {
+        "capability-first routing": ("capability needed next", "needed outcome or capability"),
+        "available-skill matching": ("available skills", "available skill"),
+        "ordinary assistant fallback": ("ordinary assistant capabilities",),
+        "optional example skills": ("not required dependencies",),
+        "no automatic installation": ("do not install a missing skill", "trigger automatic installation"),
+    }
+    missing_markers = [
+        label
+        for label, alternatives in dynamic_routing_markers.items()
+        if not any(marker in skill_lower for marker in alternatives)
+    ]
+    if missing_markers:
+        fail(f"SKILL.md is missing dynamic-routing contract: {', '.join(missing_markers)}")
+
     combined = "\n".join(texts.values())
     placeholders = re.findall(r"\b(?:TODO|TBD|FIXME)\b", combined, re.IGNORECASE)
     if placeholders:

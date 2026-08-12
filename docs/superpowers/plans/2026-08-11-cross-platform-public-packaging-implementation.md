@@ -1,5 +1,7 @@
 # Cross-Platform Public Packaging Implementation Plan
 
+> Status: Completed. Kept as a historical implementation record; later behavior refinements are documented in the current Skill and README files.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Present `align-before-action` as a public, cross-platform skill pack with one shared behavior contract and clear host-specific packaging notes.
@@ -87,4 +89,3 @@ Expected result: `OK: validated 7 release files and 39 behavioral cases`
 - [ ] **Step 2: Review the diff**
 
 Confirm only the intended documentation files changed and the Codex package remains intact.
-

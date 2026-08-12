@@ -1,6 +1,6 @@
 # Cross-Platform Public Packaging Design
 
-> Status: Proposed. This design describes how to present `align-before-action` as a reusable public skill across multiple agent hosts while keeping one shared behavior contract.
+> Status: Historical / superseded. This design describes the packaging work; current behavior and host guidance live in the Skill and harness notes.
 
 ## Goal
 
@@ -133,4 +133,3 @@ Validate this design by checking three things:
 1. The core behavior still passes the existing behavioral cases.
 2. The public README clearly explains the platform split.
 3. Each adapter can be understood without reading another platform's packaging.
-

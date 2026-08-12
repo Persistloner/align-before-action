@@ -1,6 +1,6 @@
 # Implicit Alignment Suggestion Design
 
-> Status: Implemented. The current `SKILL.md`, metadata, README files, and behavioral cases reflect this design.
+> Status: Historical / superseded. This design was implemented and later refined by the current `SKILL.md`, metadata, README files, and behavioral cases.
 
 ## Goal
 

@@ -1,6 +1,6 @@
 # Align Before Action: Public Release Plan
 
-> Status: Completed. This plan captures the release work before later behavioral refinements and implicit suggestion updates.
+> Status: Historical / superseded. This plan captures the initial release work before later behavioral refinements, implicit suggestion updates, and dynamic capability routing.
 
 ## Goal
 

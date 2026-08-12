@@ -12,8 +12,8 @@ This is the native packaging path for `align-before-action`.
 
 - Codex uses `$align-before-action`
 - Codex may auto-suggest the skill when unresolved information is high-impact
+- After alignment, Codex can expose available downstream skills for capability-based recommendations; if none match, continue with ordinary assistant capabilities.
 
 ## Install
 
 Copy the `skills/align-before-action` directory into your Codex skills location and reload Codex.
-

@@ -5,9 +5,10 @@ Claude Code can use the same alignment contract, but its packaging and trigger s
 ## What stays the same
 
 - Clarify before action
-- One material question at a time
+- One material question at a time by default, with related questions combined when that reduces user effort
 - Reversible provisional defaults are allowed when they reduce pressure
 - Confirm the shared brief before handoff
+- Route by the capability needed next. If installed skills cannot be enumerated, use ordinary assistant capabilities instead of claiming a named skill is available.
 
 ## What changes
 
@@ -18,4 +19,3 @@ Claude Code can use the same alignment contract, but its packaging and trigger s
 ## Porting note
 
 Reuse the wording from `skills/align-before-action/SKILL.md` as the canonical behavior text, then wrap it in whatever Claude Code expects for skill loading.
-

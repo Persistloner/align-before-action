@@ -1,7 +1,7 @@
 interface:
   display_name: "Align Before Action"
   short_description: "Clarify a rough idea before taking action"
-  default_prompt: "Use $align-before-action. 请先帮我把模糊的想法、目标或需求理清楚，再决定下一步；默认用中文，一次只问一个关键问题，必要时可以轻量润色并给出下一步建议。"
+  default_prompt: "Use $align-before-action. 请先帮我把想法、目标或需求理清楚；默认用中文，每次优先推进一个关键问题，相关问题必要时可合并。确认理解一致后，先判断下一步需要什么能力，再结合当前可用 Skill 或 AI 自身能力给出简短建议，等我明确选择后再执行。"
 
 policy:
   allow_implicit_invocation: true

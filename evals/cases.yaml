@@ -28,6 +28,39 @@ cases:
       - "Starting the full alignment flow before the user accepts the suggestion."
       - "Treating the request as vague solely because it is informal."
 
+  - id: skill-loading-is-not-consent
+    stage: entry
+    user: "我想做一个面向大学生的产品，但目前只有一个大概想法。"
+    expected:
+      - "Remain in Suggestion mode even if Align Before Action was selected or loaded implicitly."
+      - "Return a brief, natural optional suggestion asking whether to enter alignment."
+    forbidden:
+      - "Entering Understand without explicit invocation or acceptance."
+      - "Asking an alignment question before the user accepts the suggestion."
+      - "Starting the alignment flow, checklist, plan, or product-design question in the suggestion."
+      - "Restating the user's topic as a confirmed project, such as 'we are building a product'."
+
+  - id: implicit-suggestion-is-single-sentence
+    stage: entry
+    user: "我想做一个面向大学生的产品，但目前只有一个大概想法。"
+    expected:
+      - "If high-impact uncertainty is detected without explicit invocation, output a compact optional entry suggestion with a brief reason."
+      - "Optionally offer a rough judgment as a low-commitment alternative."
+    forbidden:
+      - "Adding a substantive alignment question, full option set, advice sequence, plan, summary, or downstream-skill handoff in the same turn."
+      - "Inferring a specific deliverable or research method that the user did not request."
+
+  - id: next-step-does-not-authorize-alignment
+    stage: entry
+    user: "我有一个产品想法，但还没想清楚到底要解决什么问题。你先告诉我下一步该怎么做。"
+    expected:
+      - "Recognize that the unresolved problem is likely to change the next action."
+      - "Offer one concise, optional suggestion to enter Align Before Action."
+    forbidden:
+      - "Starting the full alignment flow before the user accepts the suggestion."
+      - "Giving a multi-step product validation plan before the user chooses whether to align."
+      - "Adding advice, a checklist, research steps, or a draft brief to the entry suggestion."
+
   - id: downstream-coordination-gate
     stage: entry
     user: "我想做一个面向 AI PM 的 skill。"
@@ -48,6 +81,26 @@ cases:
     forbidden:
       - "Switching immediately into brainstorming design options."
       - "Starting skill creation or writing a skill brief before the alignment flow reaches handoff."
+
+  - id: product-mention-is-not-brainstorming-authorization
+    stage: entry
+    user: "我想做一个面向大学生的产品，但目前只有一个大概想法。"
+    expected:
+      - "Treat brainstorming as a possible downstream destination, not as the current workflow."
+      - "Offer alignment first when high-impact uncertainty remains."
+    forbidden:
+      - "Entering brainstorming merely because the user mentioned a product."
+      - "Proposing product approaches, features, or a design before the alignment gate resolves."
+
+  - id: confirmed-brief-does-not-auto-start-brainstorming
+    stage: final-checkpoint
+    user: "确认，你理解得没问题。"
+    expected:
+      - "Ask what the user wants to do next."
+      - "Keep brainstorming as an optional downstream choice rather than starting it."
+    forbidden:
+      - "Automatically entering brainstorming after final confirmation."
+      - "Starting product design without an explicitly named next action."
 
   - id: downstream-after-alignment-decline
     stage: entry
@@ -218,6 +271,116 @@ cases:
       - "Introducing solution alternatives before whole-understanding confirmation."
       - "Combining understanding confirmation with an improvement choice."
 
+  - id: understanding-confirmation-offers-next-step
+    stage: post-confirmation
+    user: "确认，你理解得没问题。"
+    expected:
+      - "Treat this as confirmation of understanding only, not execution authorization."
+      - "Offer a concise next-step recommendation or a small set of meaningful paths."
+      - "Keep downstream skills optional until the user explicitly selects one."
+    forbidden:
+      - "Stopping without giving the user a next-step path when the conversation is ready to move on."
+      - "Starting a plan, brainstorming, or execution automatically."
+
+  - id: post-confirmation-routes-by-capability
+    stage: post-confirmation
+    user: "确认理解一致。你根据我现在真正需要的下一步给建议。"
+    expected:
+      - "Identify the capability or outcome needed next before naming a particular skill."
+      - "Recommend a route based on the current goal and available capabilities."
+    forbidden:
+      - "Defaulting to brainstorming or grilling without first matching the needed capability."
+      - "Treating example skills as mandatory destinations."
+
+  - id: missing-example-skill-has-fallback
+    stage: post-confirmation
+    user: "我没有安装 brainstorming 或 grilling，确认理解一致后还能继续吗？"
+    expected:
+      - "Continue normally and offer a route that does not depend on those skills."
+      - "Explain the next action in capability terms rather than requiring installation."
+    forbidden:
+      - "Stopping because an example downstream skill is unavailable."
+      - "Automatically installing a skill or requiring the user to install one."
+
+  - id: available-skill-can-replace-examples
+    stage: post-confirmation
+    user: "我装了一个专门做决策分析的 skill，没有安装 grilling。"
+    expected:
+      - "Consider the available decision-analysis skill if its declared purpose matches the needed next step."
+      - "Keep ordinary assistant handling as a fallback."
+    forbidden:
+      - "Recommending grilling solely because stress-testing is mentioned."
+      - "Claiming an unavailable skill is required."
+
+  - id: understanding-confirmation-does-not-authorize-execution
+    stage: post-confirmation
+    user: "确认理解一致，但我还没说要现在执行。"
+    expected:
+      - "Offer a discussion, record, or route choice without treating understanding confirmation as execution authorization."
+    forbidden:
+      - "Starting external work or producing the requested final artifact automatically."
+
+  - id: summary-brief-and-interim-record-are-distinct
+    stage: post-confirmation
+    user: "先让我看看你现在怎么理解，不用形成正式方案。"
+    expected:
+      - "Provide a concise conversational summary or clearly label a requested interim record."
+      - "Keep a formal Brief reserved for a sufficiently clear, confirmed handoff basis."
+    forbidden:
+      - "Presenting a full specification or execution-ready plan as a casual summary."
+
+  - id: one-question-rule-is-a-default
+    stage: understand
+    user: "这两个问题高度相关，你可以一起问，我想一次回答完。"
+    expected:
+      - "Allow closely related questions to be combined when the user explicitly prefers that and the response remains manageable."
+    forbidden:
+      - "Splitting every related question into separate turns solely because of a rigid one-question rule."
+
+  - id: option-count-is-adaptive
+    stage: understand
+    user: "这个问题有两个明显方向，直接给我这两个选项就好。"
+    expected:
+      - "Use the smallest option set that covers the materially different directions."
+    forbidden:
+      - "Adding extra options merely to reach a fixed minimum."
+
+  - id: challenge-only-material-assumptions
+    stage: improve
+    user: "我只是想把这句话说顺，不需要分析我的假设。"
+    expected:
+      - "Keep the response as light wording help unless an assumption materially affects the requested outcome."
+    forbidden:
+      - "Turning a simple wording request into unsolicited assumption-challenging or debate."
+
+  - id: explicit-research-request-needs-no-duplicate-permission
+    stage: handoff
+    user: "请直接去 GitHub 找 star 较多的同类项目并比较它们。"
+    expected:
+      - "Treat the explicit ordinary research request as permission to perform that research, subject to normal safety and platform rules."
+    forbidden:
+      - "Asking for a redundant permission confirmation solely because external research is involved."
+
+  - id: preserve-explicit-bounded-conversational-action
+    stage: understand
+    user: "我想跟同事说这周做不完，但不想显得在推责。"
+    expected:
+      - "Preserve the user's explicit bounded conversational goal and avoid asking again whether to help with that wording."
+      - "Clarify only any material ambiguity, then provide or prepare the wording naturally."
+    forbidden:
+      - "Treating a clearly requested light wording action as needing a separate execution authorization."
+      - "Adding a handoff choice that creates an unnecessary extra turn."
+
+  - id: exploratory-candidates-for-unknowns
+    stage: understand
+    user: "我不知道这个产品成功应该是什么样，你先帮我想想可能有哪些方向。"
+    expected:
+      - "Offer a small set of clearly labeled exploratory hypotheses or dimensions to help the user think."
+      - "Keep the candidates provisional and invite correction rather than treating them as selected requirements."
+    forbidden:
+      - "Refusing to offer any candidate because all assistant-authored possibilities are prohibited."
+      - "Presenting an exploratory candidate as a confirmed product decision."
+
   - id: local-confirmations-do-not-unlock
     stage: understand
     user: "前面几个问题我都分别说了‘对’，现在讨论下一项。"
@@ -331,6 +494,26 @@ cases:
       - "Ask exactly one material question."
     forbidden:
       - "Asking multiple independent questions."
+
+  - id: foundational-gaps-stay-serial
+    stage: understand
+    user: "我想做一个产品或 skill，但还没决定具体方向。先帮我对齐。"
+    expected:
+      - "Ask only the earliest prerequisite question, such as whether the user is considering a product or a skill."
+      - "Keep the turn to one answer task."
+    forbidden:
+      - "Bundling questions about the artifact type, target user, problem, and constraints in one turn."
+      - "Presenting a three-question intake form."
+
+  - id: lightweight-socratic-questioning
+    stage: understand
+    user: "使用 $align-before-action 帮我想清楚：我想把团队周会取消掉，因为大家都觉得浪费时间。"
+    expected:
+      - "Use one lightweight Socratic question or contrast to surface the assumption that the meeting itself, rather than its format or purpose, is the problem."
+      - "Keep the question focused on understanding the user's existing intent."
+    forbidden:
+      - "Turning the turn into a chain of rhetorical questions or an interrogation."
+      - "Presenting a meeting-replacement solution as if the user had already chosen it."
 
   - id: compact-summary-on-request
     stage: understand
