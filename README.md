@@ -1,6 +1,12 @@
 # Align Before Action
 
-`Align Before Action` is a guided clarification workflow for thinking before acting. Use it when the goal is still taking shape, the context is incomplete, or you want the assistant to ask before it assumes. It works for product ideas, daily decisions, writing, requests, and any rough thought that needs a clearer shape first. Its primary method is guided clarification, with lightweight Socratic questioning used selectively to surface assumptions, trade-offs, or hidden gaps. Once active, it helps the assistant understand your original intent, work through key gaps with you, improve the idea without taking it over, confirm the final brief, and act only after your explicit approval.
+`Align Before Action` is a clarification skill for situations where an AI assistant might otherwise act on incomplete or ambiguous intent.
+
+It helps the assistant understand what you mean, identify important gaps, and improve the idea through a focused conversation before moving to a plan, another skill, or an external action.
+
+Use it for developing ideas, making decisions, writing, planning, requests, and everyday situations where different interpretations could lead to different outcomes.
+
+The skill does not take over the user's decisions. It keeps assumptions and suggestions provisional until you confirm them, then recommends the most appropriate next step. Actions that modify files, communicate externally, publish, or deploy still require explicit authorization.
 
 This repository is built as a cross-platform skill pack: the behavior contract is shared, while Codex, Claude Code, and WorkBuddy use their own packaging or loading wrapper. See [harness porting notes](docs/harnesses/README.md) for the platform split.
 
